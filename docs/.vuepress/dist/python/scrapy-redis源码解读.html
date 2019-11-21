@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>scrapy-redis源码解读 | duziea-bookmarks</title>
+    <meta name="description" content="stary hungry stay foolish">
+    <link rel="icon" href="/favicon.ico">
+    
+    <link rel="preload" href="/assets/css/0.styles.0ad23782.css" as="style"><link rel="preload" href="/assets/js/app.dabac77d.js" as="script"><link rel="preload" href="/assets/js/2.b1acc2ad.js" as="script"><link rel="preload" href="/assets/js/21.8d029260.js" as="script"><link rel="prefetch" href="/assets/js/10.f6e3c06d.js"><link rel="prefetch" href="/assets/js/11.e9b83c1c.js"><link rel="prefetch" href="/assets/js/12.8444b5eb.js"><link rel="prefetch" href="/assets/js/13.d6b969bc.js"><link rel="prefetch" href="/assets/js/14.dc4c6754.js"><link rel="prefetch" href="/assets/js/15.98bf10eb.js"><link rel="prefetch" href="/assets/js/16.8046a3c0.js"><link rel="prefetch" href="/assets/js/17.51b84f9e.js"><link rel="prefetch" href="/assets/js/18.9cc3ef77.js"><link rel="prefetch" href="/assets/js/19.480e5dc0.js"><link rel="prefetch" href="/assets/js/20.279c30ab.js"><link rel="prefetch" href="/assets/js/22.bd4e2089.js"><link rel="prefetch" href="/assets/js/23.1f0200c0.js"><link rel="prefetch" href="/assets/js/24.4e139f3d.js"><link rel="prefetch" href="/assets/js/25.dc2e9b6e.js"><link rel="prefetch" href="/assets/js/26.cc78e683.js"><link rel="prefetch" href="/assets/js/27.87c9010a.js"><link rel="prefetch" href="/assets/js/3.91de71b1.js"><link rel="prefetch" href="/assets/js/4.9e4e91b9.js"><link rel="prefetch" href="/assets/js/5.a9ae41ee.js"><link rel="prefetch" href="/assets/js/6.5a6eaa9f.js"><link rel="prefetch" href="/assets/js/7.30d57532.js"><link rel="prefetch" href="/assets/js/8.7765fee4.js"><link rel="prefetch" href="/assets/js/9.7c25486c.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.0ad23782.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">duziea-bookmarks</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/repository/" class="nav-link">库</a></div><div class="nav-item"><a href="/website/" class="nav-link">网站</a></div><div class="nav-item"><a href="/blog/" class="nav-link">Blog</a></div><div class="nav-item"><a href="/python/" class="nav-link router-link-active">python</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/repository/" class="nav-link">库</a></div><div class="nav-item"><a href="/website/" class="nav-link">网站</a></div><div class="nav-item"><a href="/blog/" class="nav-link">Blog</a></div><div class="nav-item"><a href="/python/" class="nav-link router-link-active">python</a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>python</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/python/python爬取拉钩网招聘信息分析.html" class="sidebar-link">python爬取拉钩网招聘信息分析</a></li><li><a href="/python/Python selenium批量导出csdn文章.html" class="sidebar-link">Python selenium批量导出csdn文章</a></li><li><a href="/python/pyspider 安装踩坑记.html" class="sidebar-link">pyspider 安装踩坑记</a></li><li><a href="/python/pyspider 食用教程（1）.html" class="sidebar-link">pyspider 食用教程（1）</a></li><li><a href="/python/python爬qq音乐热评.html" class="sidebar-link">python爬qq音乐评论</a></li><li><a href="/python/python爬取企业信息.html" class="sidebar-link">python爬取企业信息</a></li><li><a href="/python/" class="sidebar-link">前言</a></li><li><a href="/python/scrapy-redis 构建分布式爬取京东书籍信息.html" class="sidebar-link">scrapy-redis 构建分布式爬取京东书籍信息</a></li><li><a href="/python/scrapy-redis源码解读.html" class="active sidebar-link">scrapy-redis源码解读</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#目录" class="sidebar-link">目录</a></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#init-py" class="sidebar-link">init.py</a></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#connection-py" class="sidebar-link">connection.py</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#两个方法" class="sidebar-link">两个方法</a></li></ul></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#dupefilter-py" class="sidebar-link">dupefilter.py</a></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#picklecompat-py" class="sidebar-link">picklecompat.py</a></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#piplines-py" class="sidebar-link">piplines.py</a></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#queue-py" class="sidebar-link">queue.py</a></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#scheduler-py" class="sidebar-link">scheduler.py</a></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#spiders-py" class="sidebar-link">spiders.py</a></li><li class="sidebar-sub-header"><a href="/python/scrapy-redis源码解读.html#utils-py" class="sidebar-link">utils.py</a></li></ul></li><li><a href="/python/scrapyd服务器跑爬虫+爬虫可视化.html" class="sidebar-link">scrapyd服务器跑爬虫+爬虫可视化</a></li><li><a href="/python/scrapy爬取识货网商品信息.html" class="sidebar-link">scrapy爬取识货网商品信息</a></li><li><a href="/python/极验滑动验证码破解.html" class="sidebar-link">极验滑动验证码破解</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="scrapy-redis源码解读"><a href="#scrapy-redis源码解读" class="header-anchor">#</a> scrapy-redis源码解读</h1> <h2 id="目录"><a href="#目录" class="header-anchor">#</a> 目录</h2> <p><img src="https://img-blog.csdnimg.cn/20191001120719218.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MTkyMDMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p> <h2 id="init-py"><a href="#init-py" class="header-anchor">#</a> init.py</h2> <p><img src="https://img-blog.csdnimg.cn/20191001120741290.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MTkyMDMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">
+从connect.py import 了get_redis,get_redis_from_settings，这样可以在导入scrapy_redis时自动导入这两个方法，还有作者，email和版本</p> <h2 id="connection-py"><a href="#connection-py" class="header-anchor">#</a> connection.py</h2> <div class="language-python extra-class"><pre class="language-python"><code>mport six
+
+<span class="token keyword">from</span> scrapy<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>misc <span class="token keyword">import</span> load_object
+
+<span class="token keyword">from</span> <span class="token punctuation">.</span> <span class="token keyword">import</span> defaults
+
+
+<span class="token comment"># Shortcut maps 'setting name' -&gt; 'parmater name'.</span>
+SETTINGS_PARAMS_MAP <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">'REDIS_URL'</span><span class="token punctuation">:</span> <span class="token string">'url'</span><span class="token punctuation">,</span>
+    <span class="token string">'REDIS_HOST'</span><span class="token punctuation">:</span> <span class="token string">'host'</span><span class="token punctuation">,</span>
+    <span class="token string">'REDIS_PORT'</span><span class="token punctuation">:</span> <span class="token string">'port'</span><span class="token punctuation">,</span>
+    <span class="token string">'REDIS_ENCODING'</span><span class="token punctuation">:</span> <span class="token string">'encoding'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+
+
+<span class="token keyword">def</span> <span class="token function">get_redis_from_settings</span><span class="token punctuation">(</span>settings<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns a redis client instance from given Scrapy settings object.
+
+    This function uses ``get_client`` to instantiate the client and uses
+    ``defaults.REDIS_PARAMS`` global as defaults values for the parameters. You
+    can override them using the ``REDIS_PARAMS`` setting.
+
+    Parameters
+    ----------
+    settings : Settings
+        A scrapy settings object. See the supported settings below.
+
+    Returns
+    -------
+    server
+        Redis client instance.
+
+    Other Parameters
+    ----------------
+    REDIS_URL : str, optional
+        Server connection URL.
+    REDIS_HOST : str, optional
+        Server host.
+    REDIS_PORT : str, optional
+        Server port.
+    REDIS_ENCODING : str, optional
+        Data encoding.
+    REDIS_PARAMS : dict, optional
+        Additional client parameters.
+
+    &quot;&quot;&quot;</span>
+    params <span class="token operator">=</span> defaults<span class="token punctuation">.</span>REDIS_PARAMS<span class="token punctuation">.</span>copy<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    params<span class="token punctuation">.</span>update<span class="token punctuation">(</span>settings<span class="token punctuation">.</span>getdict<span class="token punctuation">(</span><span class="token string">'REDIS_PARAMS'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token comment"># XXX: Deprecate REDIS_* settings.</span>
+    <span class="token keyword">for</span> source<span class="token punctuation">,</span> dest <span class="token keyword">in</span> SETTINGS_PARAMS_MAP<span class="token punctuation">.</span>items<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        val <span class="token operator">=</span> settings<span class="token punctuation">.</span>get<span class="token punctuation">(</span>source<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> val<span class="token punctuation">:</span>
+            params<span class="token punctuation">[</span>dest<span class="token punctuation">]</span> <span class="token operator">=</span> val
+
+    <span class="token comment"># Allow ``redis_cls`` to be a path to a class.</span>
+    <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>params<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'redis_cls'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> six<span class="token punctuation">.</span>string_types<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        params<span class="token punctuation">[</span><span class="token string">'redis_cls'</span><span class="token punctuation">]</span> <span class="token operator">=</span> load_object<span class="token punctuation">(</span>params<span class="token punctuation">[</span><span class="token string">'redis_cls'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> get_redis<span class="token punctuation">(</span><span class="token operator">**</span>params<span class="token punctuation">)</span>
+
+
+<span class="token comment"># Backwards compatible alias.</span>
+from_settings <span class="token operator">=</span> get_redis_from_settings
+
+
+<span class="token keyword">def</span> <span class="token function">get_redis</span><span class="token punctuation">(</span><span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns a redis client instance.
+
+    Parameters
+    ----------
+    redis_cls : class, optional
+        Defaults to ``redis.StrictRedis``.
+    url : str, optional
+        If given, ``redis_cls.from_url`` is used to instantiate the class.
+    **kwargs
+        Extra parameters to be passed to the ``redis_cls`` class.
+
+    Returns
+    -------
+    server
+        Redis client instance.
+
+    &quot;&quot;&quot;</span>
+    redis_cls <span class="token operator">=</span> kwargs<span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token string">'redis_cls'</span><span class="token punctuation">,</span> defaults<span class="token punctuation">.</span>REDIS_CLS<span class="token punctuation">)</span>
+    url <span class="token operator">=</span> kwargs<span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> url<span class="token punctuation">:</span>
+        <span class="token keyword">return</span> redis_cls<span class="token punctuation">.</span>from_url<span class="token punctuation">(</span>url<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> redis_cls<span class="token punctuation">(</span><span class="token operator">**</span>kwargs<span class="token punctuation">)</span>
+
+</code></pre></div><p>三个import</p> <ul><li><p>import six</p> <p>用与兼容python2与python3的模块，有了它，代码无序改动就能在python3或2上run起来，它的原理是重定义了python2、3中有差异的函数。</p></li> <li><p>from scrapy.utils.misc import load_object</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">load_object</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Load an object given its absolute object path, and return it.
+
+    object can be a class, function, variable or an instance.
+    path ie: 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware'
+    &quot;&quot;&quot;</span>
+
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        dot <span class="token operator">=</span> path<span class="token punctuation">.</span>rindex<span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span> ValueError<span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">&quot;Error loading object '%s': not a full path&quot;</span> <span class="token operator">%</span> path<span class="token punctuation">)</span>
+
+    module<span class="token punctuation">,</span> name <span class="token operator">=</span> path<span class="token punctuation">[</span><span class="token punctuation">:</span>dot<span class="token punctuation">]</span><span class="token punctuation">,</span> path<span class="token punctuation">[</span>dot<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    mod <span class="token operator">=</span> import_module<span class="token punctuation">(</span>module<span class="token punctuation">)</span>
+
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        obj <span class="token operator">=</span> <span class="token builtin">getattr</span><span class="token punctuation">(</span>mod<span class="token punctuation">,</span> name<span class="token punctuation">)</span>
+    <span class="token keyword">except</span> AttributeError<span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> NameError<span class="token punctuation">(</span><span class="token string">&quot;Module '%s' doesn't define any object named '%s'&quot;</span> <span class="token operator">%</span> <span class="token punctuation">(</span>module<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> obj
+</code></pre></div><p>接收一个对象的绝对路径，返回这个对象</p> <p>例如：</p> <div class="language-python extra-class"><pre class="language-python"><code> path <span class="token operator">=</span> <span class="token string">'scrapy.downloadermiddlewares.redirect.RedirectMiddleware'</span>
+    obj <span class="token operator">=</span> load_object<span class="token punctuation">(</span>path<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span>
+</code></pre></div></li></ul> <p><img src="https://img-blog.csdnimg.cn/20191001120837884.png" alt="在这里插入图片描述"></p> <ul><li><p>from . import defaults</p> <p>导入default.py</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token comment">#defaults.py</span>
+<span class="token keyword">import</span> redis
+
+
+<span class="token comment"># For standalone use.</span>
+DUPEFILTER_KEY <span class="token operator">=</span> <span class="token string">'dupefilter:%(timestamp)s'</span>
+
+PIPELINE_KEY <span class="token operator">=</span> <span class="token string">'%(spider)s:items'</span>
+
+REDIS_CLS <span class="token operator">=</span> redis<span class="token punctuation">.</span>StrictRedis
+REDIS_ENCODING <span class="token operator">=</span> <span class="token string">'utf-8'</span>
+<span class="token comment"># Sane connection defaults.</span>
+REDIS_PARAMS <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">'socket_timeout'</span><span class="token punctuation">:</span> <span class="token number">30</span><span class="token punctuation">,</span>
+    <span class="token string">'socket_connect_timeout'</span><span class="token punctuation">:</span> <span class="token number">30</span><span class="token punctuation">,</span>
+    <span class="token string">'retry_on_timeout'</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span>
+    <span class="token string">'encoding'</span><span class="token punctuation">:</span> REDIS_ENCODING<span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+
+SCHEDULER_QUEUE_KEY <span class="token operator">=</span> <span class="token string">'%(spider)s:requests'</span>
+SCHEDULER_QUEUE_CLASS <span class="token operator">=</span> <span class="token string">'scrapy_redis.queue.PriorityQueue'</span>
+SCHEDULER_DUPEFILTER_KEY <span class="token operator">=</span> <span class="token string">'%(spider)s:dupefilter'</span>
+SCHEDULER_DUPEFILTER_CLASS <span class="token operator">=</span> <span class="token string">'scrapy_redis.dupefilter.RFPDupeFilter'</span>
+
+START_URLS_KEY <span class="token operator">=</span> <span class="token string">'%(name)s:start_urls'</span>
+START_URLS_AS_SET <span class="token operator">=</span> <span class="token boolean">False</span>
+
+</code></pre></div><p>定义了一些默认的参数，方便调用</p></li></ul> <p>SETTINGS_PARAMS_MAP 映射了redis的setting参数</p> <h3 id="两个方法"><a href="#两个方法" class="header-anchor">#</a> 两个方法</h3> <ol><li><p>def get_redis_from_settings(settings)</p> <p>copy一个defaults.py中的REDIS_PARAMS作为params(这里应该是浅拷贝)</p> <p>获取default.py中redis的默认连接参数， 获取setting中用户设置的参数替换掉默认(如果有的话)。</p> <p>使用load_object获取设置的redis_cls，存入params</p> <p>返回get_redis(**params)</p></li> <li><p>def get_redis(**kwargs)</p> <p>通过redis_cls = kwargs.pop('redis_cls', defaults.REDIS_CLS)获取用户设置的redis_cls值，默认为dafault.py的REDIS_CLS值</p> <p>获取url值，默认为none，若有则通过url连接redis，若无，则通过参数连接。</p> <p>返回redis_cls()，即连接redis实例</p></li></ol> <h2 id="dupefilter-py"><a href="#dupefilter-py" class="header-anchor">#</a> dupefilter.py</h2> <p>代码太长，拆开来看</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">import</span> logging
+<span class="token keyword">import</span> time
+
+<span class="token keyword">from</span> scrapy<span class="token punctuation">.</span>dupefilters <span class="token keyword">import</span> BaseDupeFilter
+<span class="token keyword">from</span> scrapy<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>request <span class="token keyword">import</span> request_fingerprint
+
+<span class="token keyword">from</span> <span class="token punctuation">.</span> <span class="token keyword">import</span> defaults
+<span class="token keyword">from</span> <span class="token punctuation">.</span>connection <span class="token keyword">import</span> get_redis_from_settings
+</code></pre></div><p>import logging、time模块用来输出日志</p> <p>import BaseDupeFilter，request_fingerprint，用于重写RFPDupeFilter()类</p> <p>其中request_fingerprint使用sha1算法将request的method，url，body，headers加密为一个字符串，通过这个加密后的字符串来判断request请求是否重复，值得一提的是，使用了canonicalize_url对url先进行了先规范化后再加密，canonicalize_url的使用urllib.parse解析url再规范化，具体操作表现为</p> <p>对query arguments进行排序，例如：</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span> w3lib.url.canonicalize_url<span class="token punctuation">(</span><span class="token string">'http://www.example.com/do?c=3&amp;b=5&amp;b=2&amp;a=50'</span><span class="token punctuation">)</span>
+    <span class="token string">'http://www.example.com/do?a=50&amp;b=2&amp;b=5&amp;c=3'</span>
+</code></pre></div><p>将path转为utf-8编码，例如：</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token operator">&gt;&gt;</span><span class="token operator">&gt;</span>w3lib.url.canonicalize_url<span class="token punctuation">(</span>u<span class="token string">'http://www.example.com/r<span class="token entity" title="\u00e9">\u00e9</span>sum<span class="token entity" title="\u00e9">\u00e9</span>'</span><span class="token punctuation">)</span>
+    <span class="token string">'http://www.example.com/r%C3%A9sum%C3%A9'</span>
+</code></pre></div><p>看看这个RFPDupeFilter()类</p> <p>首先初始化需要的参数有redis连接实例，key为redis的key，debug为调试模式</p> <div class="language-python extra-class"><pre class="language-python"><code> <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> server<span class="token punctuation">,</span> key<span class="token punctuation">,</span> debug<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Initialize the duplicates filter.
+
+        Parameters
+        ----------
+        server : redis.StrictRedis
+            The redis server instance.
+        key : str
+            Redis key Where to store fingerprints.
+        debug : bool, optional
+            Whether to log filtered requests.
+
+        &quot;&quot;&quot;</span>
+        self<span class="token punctuation">.</span>server <span class="token operator">=</span> server
+        self<span class="token punctuation">.</span>key <span class="token operator">=</span> key
+        self<span class="token punctuation">.</span>debug <span class="token operator">=</span> debug
+        self<span class="token punctuation">.</span>logdupes <span class="token operator">=</span> <span class="token boolean">True</span>
+</code></pre></div><p>定义了两个类方法，从setting读取配置，key为时间戳，返回RFPDupeFilter()实例。</p> <div class="language-python extra-class"><pre class="language-python"><code>	<span class="token decorator annotation punctuation">@classmethod</span>
+    <span class="token keyword">def</span> <span class="token function">from_settings</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> settings<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns an instance from given settings.
+
+        This uses by default the key ``dupefilter:&lt;timestamp&gt;``. When using the
+        ``scrapy_redis.scheduler.Scheduler`` class, this method is not used as
+        it needs to pass the spider name in the key.
+
+        Parameters
+        ----------
+        settings : scrapy.settings.Settings
+
+        Returns
+        -------
+        RFPDupeFilter
+            A RFPDupeFilter instance.
+        &quot;&quot;&quot;</span>
+        server <span class="token operator">=</span> get_redis_from_settings<span class="token punctuation">(</span>settings<span class="token punctuation">)</span>
+        <span class="token comment"># XXX: This creates one-time key. needed to support to use this</span>
+        <span class="token comment"># class as standalone dupefilter with scrapy's default scheduler</span>
+        <span class="token comment"># if scrapy passes spider on open() method this wouldn't be needed</span>
+        <span class="token comment"># TODO: Use SCRAPY_JOB env as default and fallback to timestamp.</span>
+        key <span class="token operator">=</span> defaults<span class="token punctuation">.</span>DUPEFILTER_KEY <span class="token operator">%</span> <span class="token punctuation">{</span><span class="token string">'timestamp'</span><span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+        debug <span class="token operator">=</span> settings<span class="token punctuation">.</span>getbool<span class="token punctuation">(</span><span class="token string">'DUPEFILTER_DEBUG'</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> cls<span class="token punctuation">(</span>server<span class="token punctuation">,</span> key<span class="token operator">=</span>key<span class="token punctuation">,</span> debug<span class="token operator">=</span>debug<span class="token punctuation">)</span>
+
+    @<span class="token builtin">classmethod</span>
+    <span class="token keyword">def</span> <span class="token function">from_crawler</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> crawler<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns instance from crawler.
+
+        Parameters
+        ----------
+        crawler : scrapy.crawler.Crawler
+
+        Returns
+        -------
+        RFPDupeFilter
+            Instance of RFPDupeFilter.
+
+        &quot;&quot;&quot;</span>
+        <span class="token keyword">return</span> cls<span class="token punctuation">.</span>from_settings<span class="token punctuation">(</span>crawler<span class="token punctuation">.</span>settings<span class="token punctuation">)</span>
+</code></pre></div><p>定义request_seen 方法通过redis的sadd方法，添加key，fp，若已存在则返回0</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">request_seen</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns True if request was already seen.
+
+        Parameters
+        ----------
+        request : scrapy.http.Request
+
+        Returns
+        -------
+        bool
+
+        &quot;&quot;&quot;</span>
+        fp <span class="token operator">=</span> self<span class="token punctuation">.</span>request_fingerprint<span class="token punctuation">(</span>request<span class="token punctuation">)</span>
+        <span class="token comment"># This returns the number of values added, zero if already exists.</span>
+        added <span class="token operator">=</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>sadd<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">,</span> fp<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> added <span class="token operator">==</span> <span class="token number">0</span>
+</code></pre></div><p>定义了request_fingerprint ，接收request，返回之前import的return request_fingerprint</p> <p>定义close，关闭时删除数据，用于被scrapy的scheduler调用</p> <p>定义clear，调用redis的delete删除通过key删除值</p> <p>定义log,用于打印debug日志</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">request_fingerprint</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns a fingerprint for a given request.
+
+        Parameters
+        ----------
+        request : scrapy.http.Request
+
+        Returns
+        -------
+        str
+
+        &quot;&quot;&quot;</span>
+        <span class="token keyword">return</span> request_fingerprint<span class="token punctuation">(</span>request<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">close</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> reason<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Delete data on close. Called by Scrapy's scheduler.
+
+        Parameters
+        ----------
+        reason : str, optional
+
+        &quot;&quot;&quot;</span>
+        self<span class="token punctuation">.</span>clear<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">clear</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Clears fingerprints data.&quot;&quot;&quot;</span>
+        self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>delete<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">log</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">,</span> spider<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Logs given request.
+
+        Parameters
+        ----------
+        request : scrapy.http.Request
+        spider : scrapy.spiders.Spider
+
+        &quot;&quot;&quot;</span>
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>debug<span class="token punctuation">:</span>
+            msg <span class="token operator">=</span> <span class="token string">&quot;Filtered duplicate request: %(request)s&quot;</span>
+            self<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>debug<span class="token punctuation">(</span>msg<span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token string">'request'</span><span class="token punctuation">:</span> request<span class="token punctuation">}</span><span class="token punctuation">,</span> extra<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">'spider'</span><span class="token punctuation">:</span> spider<span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> self<span class="token punctuation">.</span>logdupes<span class="token punctuation">:</span>
+            msg <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">&quot;Filtered duplicate request %(request)s&quot;</span>
+                   <span class="token string">&quot; - no more duplicates will be shown&quot;</span>
+                   <span class="token string">&quot; (see DUPEFILTER_DEBUG to show all duplicates)&quot;</span><span class="token punctuation">)</span>
+            self<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>debug<span class="token punctuation">(</span>msg<span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token string">'request'</span><span class="token punctuation">:</span> request<span class="token punctuation">}</span><span class="token punctuation">,</span> extra<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">'spider'</span><span class="token punctuation">:</span> spider<span class="token punctuation">}</span><span class="token punctuation">)</span>
+            self<span class="token punctuation">.</span>logdupes <span class="token operator">=</span> <span class="token boolean">False</span>
+</code></pre></div><h2 id="picklecompat-py"><a href="#picklecompat-py" class="header-anchor">#</a> picklecompat.py</h2> <div class="language-python extra-class"><pre class="language-python"><code><span class="token triple-quoted-string string">&quot;&quot;&quot;A pickle wrapper module with protocol=-1 by default.&quot;&quot;&quot;</span>
+
+<span class="token keyword">try</span><span class="token punctuation">:</span>
+    <span class="token keyword">import</span> cPickle <span class="token keyword">as</span> pickle  <span class="token comment"># PY2</span>
+<span class="token keyword">except</span> ImportError<span class="token punctuation">:</span>
+    <span class="token keyword">import</span> pickle
+
+
+<span class="token keyword">def</span> <span class="token function">loads</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> pickle<span class="token punctuation">.</span>loads<span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">dumps</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> pickle<span class="token punctuation">.</span>dumps<span class="token punctuation">(</span>obj<span class="token punctuation">,</span> protocol<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
+</code></pre></div><p>类似json，将python obj转为字符，将字符转为obj，这里为什么不用json我也不懂？</p> <h2 id="piplines-py"><a href="#piplines-py" class="header-anchor">#</a> piplines.py</h2> <p>定义一个RedisPipeline类，序列化获取的item数据，存入redis，这里用了deferToThread多线程存储</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">from</span> scrapy<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>misc <span class="token keyword">import</span> load_object
+<span class="token keyword">from</span> scrapy<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>serialize <span class="token keyword">import</span> ScrapyJSONEncoder
+<span class="token keyword">from</span> twisted<span class="token punctuation">.</span>internet<span class="token punctuation">.</span>threads <span class="token keyword">import</span> deferToThread
+
+<span class="token keyword">from</span> <span class="token punctuation">.</span> <span class="token keyword">import</span> connection<span class="token punctuation">,</span> defaults
+
+
+default_serialize <span class="token operator">=</span> ScrapyJSONEncoder<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>encode
+
+
+<span class="token keyword">class</span> <span class="token class-name">RedisPipeline</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Pushes serialized item into a redis list/queue
+
+    Settings
+    --------
+    REDIS_ITEMS_KEY : str
+        Redis key where to store items.
+    REDIS_ITEMS_SERIALIZER : str
+        Object path to serializer function.
+
+    &quot;&quot;&quot;</span>
+
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> server<span class="token punctuation">,</span>
+                 key<span class="token operator">=</span>defaults<span class="token punctuation">.</span>PIPELINE_KEY<span class="token punctuation">,</span>
+                 serialize_func<span class="token operator">=</span>default_serialize<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Initialize pipeline.
+
+        Parameters
+        ----------
+        server : StrictRedis
+            Redis client instance.
+        key : str
+            Redis key where to store items.
+        serialize_func : callable
+            Items serializer function.
+
+        &quot;&quot;&quot;</span>
+        self<span class="token punctuation">.</span>server <span class="token operator">=</span> server
+        self<span class="token punctuation">.</span>key <span class="token operator">=</span> key
+        self<span class="token punctuation">.</span>serialize <span class="token operator">=</span> serialize_func
+
+    @<span class="token builtin">classmethod</span>
+    <span class="token keyword">def</span> <span class="token function">from_settings</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> settings<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        params <span class="token operator">=</span> <span class="token punctuation">{</span>
+            <span class="token string">'server'</span><span class="token punctuation">:</span> connection<span class="token punctuation">.</span>from_settings<span class="token punctuation">(</span>settings<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> settings<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'REDIS_ITEMS_KEY'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            params<span class="token punctuation">[</span><span class="token string">'key'</span><span class="token punctuation">]</span> <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">'REDIS_ITEMS_KEY'</span><span class="token punctuation">]</span>
+        <span class="token keyword">if</span> settings<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'REDIS_ITEMS_SERIALIZER'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            params<span class="token punctuation">[</span><span class="token string">'serialize_func'</span><span class="token punctuation">]</span> <span class="token operator">=</span> load_object<span class="token punctuation">(</span>
+                settings<span class="token punctuation">[</span><span class="token string">'REDIS_ITEMS_SERIALIZER'</span><span class="token punctuation">]</span>
+            <span class="token punctuation">)</span>
+
+        <span class="token keyword">return</span> cls<span class="token punctuation">(</span><span class="token operator">**</span>params<span class="token punctuation">)</span>
+
+    @<span class="token builtin">classmethod</span>
+    <span class="token keyword">def</span> <span class="token function">from_crawler</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> crawler<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> cls<span class="token punctuation">.</span>from_settings<span class="token punctuation">(</span>crawler<span class="token punctuation">.</span>settings<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">process_item</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> item<span class="token punctuation">,</span> spider<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> deferToThread<span class="token punctuation">(</span>self<span class="token punctuation">.</span>_process_item<span class="token punctuation">,</span> item<span class="token punctuation">,</span> spider<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">_process_item</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> item<span class="token punctuation">,</span> spider<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        key <span class="token operator">=</span> self<span class="token punctuation">.</span>item_key<span class="token punctuation">(</span>item<span class="token punctuation">,</span> spider<span class="token punctuation">)</span>
+        data <span class="token operator">=</span> self<span class="token punctuation">.</span>serialize<span class="token punctuation">(</span>item<span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>rpush<span class="token punctuation">(</span>key<span class="token punctuation">,</span> data<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> item
+
+    <span class="token keyword">def</span> <span class="token function">item_key</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> item<span class="token punctuation">,</span> spider<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns redis key based on given spider.
+
+        Override this function to use a different key depending on the item
+        and/or spider.
+
+        &quot;&quot;&quot;</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>key <span class="token operator">%</span> <span class="token punctuation">{</span><span class="token string">'spider'</span><span class="token punctuation">:</span> spider<span class="token punctuation">.</span>name<span class="token punctuation">}</span>
+
+</code></pre></div><h2 id="queue-py"><a href="#queue-py" class="header-anchor">#</a> queue.py</h2> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">class</span> <span class="token class-name">Base</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Per-spider base queue class&quot;&quot;&quot;</span>
+
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> server<span class="token punctuation">,</span> spider<span class="token punctuation">,</span> key<span class="token punctuation">,</span> serializer<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Initialize per-spider redis queue.
+
+        Parameters
+        ----------
+        server : StrictRedis
+            Redis client instance.
+        spider : Spider
+            Scrapy spider instance.
+        key: str
+            Redis key where to put and get messages.
+        serializer : object
+            Serializer object with ``loads`` and ``dumps`` methods.
+
+        &quot;&quot;&quot;</span>
+        <span class="token keyword">if</span> serializer <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            <span class="token comment"># Backward compatibility.</span>
+            <span class="token comment"># TODO: deprecate pickle.</span>
+            serializer <span class="token operator">=</span> picklecompat
+        <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">hasattr</span><span class="token punctuation">(</span>serializer<span class="token punctuation">,</span> <span class="token string">'loads'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> TypeError<span class="token punctuation">(</span><span class="token string">&quot;serializer does not implement 'loads' function: %r&quot;</span>
+                            <span class="token operator">%</span> serializer<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">hasattr</span><span class="token punctuation">(</span>serializer<span class="token punctuation">,</span> <span class="token string">'dumps'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> TypeError<span class="token punctuation">(</span><span class="token string">&quot;serializer '%s' does not implement 'dumps' function: %r&quot;</span>
+                            <span class="token operator">%</span> serializer<span class="token punctuation">)</span>
+
+        self<span class="token punctuation">.</span>server <span class="token operator">=</span> server
+        self<span class="token punctuation">.</span>spider <span class="token operator">=</span> spider
+        self<span class="token punctuation">.</span>key <span class="token operator">=</span> key <span class="token operator">%</span> <span class="token punctuation">{</span><span class="token string">'spider'</span><span class="token punctuation">:</span> spider<span class="token punctuation">.</span>name<span class="token punctuation">}</span>
+        self<span class="token punctuation">.</span>serializer <span class="token operator">=</span> serializer
+
+    <span class="token keyword">def</span> <span class="token function">_encode_request</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Encode a request object&quot;&quot;&quot;</span>
+        obj <span class="token operator">=</span> request_to_dict<span class="token punctuation">(</span>request<span class="token punctuation">,</span> self<span class="token punctuation">.</span>spider<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>serializer<span class="token punctuation">.</span>dumps<span class="token punctuation">(</span>obj<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">_decode_request</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> encoded_request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Decode an request previously encoded&quot;&quot;&quot;</span>
+        obj <span class="token operator">=</span> self<span class="token punctuation">.</span>serializer<span class="token punctuation">.</span>loads<span class="token punctuation">(</span>encoded_request<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> request_from_dict<span class="token punctuation">(</span>obj<span class="token punctuation">,</span> self<span class="token punctuation">.</span>spider<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Return the length of the queue&quot;&quot;&quot;</span>
+        <span class="token keyword">raise</span> NotImplementedError
+
+    <span class="token keyword">def</span> <span class="token function">push</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Push a request&quot;&quot;&quot;</span>
+        <span class="token keyword">raise</span> NotImplementedError
+
+    <span class="token keyword">def</span> <span class="token function">pop</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> timeout<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Pop a request&quot;&quot;&quot;</span>
+        <span class="token keyword">raise</span> NotImplementedError
+
+    <span class="token keyword">def</span> <span class="token function">clear</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Clear queue/stack&quot;&quot;&quot;</span>
+        self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>delete<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+
+</code></pre></div><p>创建一个队列基类，初始化接收4个参数（server, spider, key, serializer=None），创建redis实例，spider实例，key（redis存储数据的键），序列化对象(默认是picklecompat，也可以自己提供)</p> <p>encode_request，将request对象转为dict，接收两个参数（request，self.spider），调用request_to_dict生成obj，再对obj调用序列化函数，返回序列化后的数据。</p> <p><strong>request_to_dict</strong></p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">request_to_dict</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> spider<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Convert Request object to a dict.
+
+    If a spider is given, it will try to find out the name of the spider method
+    used in the callback and store that as the callback.
+    &quot;&quot;&quot;</span>
+    cb <span class="token operator">=</span> request<span class="token punctuation">.</span>callback
+    <span class="token keyword">if</span> <span class="token builtin">callable</span><span class="token punctuation">(</span>cb<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        cb <span class="token operator">=</span> _find_method<span class="token punctuation">(</span>spider<span class="token punctuation">,</span> cb<span class="token punctuation">)</span>
+    eb <span class="token operator">=</span> request<span class="token punctuation">.</span>errback
+    <span class="token keyword">if</span> <span class="token builtin">callable</span><span class="token punctuation">(</span>eb<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        eb <span class="token operator">=</span> _find_method<span class="token punctuation">(</span>spider<span class="token punctuation">,</span> eb<span class="token punctuation">)</span>
+    d <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token string">'url'</span><span class="token punctuation">:</span> to_unicode<span class="token punctuation">(</span>request<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">,</span>  <span class="token comment"># urls should be safe (safe_string_url)</span>
+        <span class="token string">'callback'</span><span class="token punctuation">:</span> cb<span class="token punctuation">,</span>
+        <span class="token string">'errback'</span><span class="token punctuation">:</span> eb<span class="token punctuation">,</span>
+        <span class="token string">'method'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>method<span class="token punctuation">,</span>
+        <span class="token string">'headers'</span><span class="token punctuation">:</span> <span class="token builtin">dict</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>headers<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">'body'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>body<span class="token punctuation">,</span>
+        <span class="token string">'cookies'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>cookies<span class="token punctuation">,</span>
+        <span class="token string">'meta'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>meta<span class="token punctuation">,</span>
+        <span class="token string">'_encoding'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>_encoding<span class="token punctuation">,</span>
+        <span class="token string">'priority'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>priority<span class="token punctuation">,</span>
+        <span class="token string">'dont_filter'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>dont_filter<span class="token punctuation">,</span>
+        <span class="token string">'flags'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>flags<span class="token punctuation">,</span>
+        <span class="token string">'cb_kwargs'</span><span class="token punctuation">:</span> request<span class="token punctuation">.</span>cb_kwargs<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token builtin">type</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span> <span class="token keyword">is</span> <span class="token keyword">not</span> Request<span class="token punctuation">:</span>
+        d<span class="token punctuation">[</span><span class="token string">'_class'</span><span class="token punctuation">]</span> <span class="token operator">=</span> request<span class="token punctuation">.</span>__module__ <span class="token operator">+</span> <span class="token string">'.'</span> <span class="token operator">+</span> request<span class="token punctuation">.</span>__class__<span class="token punctuation">.</span>__name__
+    <span class="token keyword">return</span> d
+</code></pre></div><p>decode_request和encode_request相反，就不多说了</p> <p>预定义了 _len _、push、pop、clear方法，clear(根据self.key清除数据)</p> <p>再看基于基类定义的<strong>先进先出队列</strong></p> <p>存储类型为集合</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">class</span> <span class="token class-name">FifoQueue</span><span class="token punctuation">(</span>Base<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Per-spider FIFO queue&quot;&quot;&quot;</span>
+
+    <span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Return the length of the queue&quot;&quot;&quot;</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>llen<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">push</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Push a request&quot;&quot;&quot;</span>
+        self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>lpush<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">,</span> self<span class="token punctuation">.</span>_encode_request<span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">pop</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> timeout<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Pop a request&quot;&quot;&quot;</span>
+        <span class="token keyword">if</span> timeout <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            data <span class="token operator">=</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>brpop<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">,</span> timeout<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> <span class="token builtin">tuple</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                data <span class="token operator">=</span> data<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            data <span class="token operator">=</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>rpop<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> data<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> self<span class="token punctuation">.</span>_decode_request<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+</code></pre></div><p>__ len__(self)：调用redis的llen根据self.key返回list的长度</p> <p>push(self, request)：调用redis的lpush，根据self.key将编码后的数据存入list左部</p> <p>[pop(self, timeout=0)]：调用redis的rpop，根据self.key抛出list右部数据，可以设置超时时间，调用redis的brpop(假如在指定时间内没有任何元素被弹出，则返回一个 nil 和等待时长。 反之，返回一个含有两个元素的列表，第一个元素是被弹出元素所属的 key ，第二个元素是被弹出元素的值。)</p> <p><a href="https://www.runoob.com/redis/lists-lpush.html" target="_blank" rel="noopener noreferrer">lpush<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> <a href="https://www.runoob.com/redis/lists-rpop.html" target="_blank" rel="noopener noreferrer">rpop<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> <a href="https://www.runoob.com/redis/lists-brpop.html" target="_blank" rel="noopener noreferrer">brpop<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p> <p><strong>优先级队列</strong></p> <p>存储类型为有序集合</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">class</span> <span class="token class-name">PriorityQueue</span><span class="token punctuation">(</span>Base<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Per-spider priority queue abstraction using redis' sorted set&quot;&quot;&quot;</span>
+
+    <span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Return the length of the queue&quot;&quot;&quot;</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>zcard<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">push</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Push a request&quot;&quot;&quot;</span>
+        data <span class="token operator">=</span> self<span class="token punctuation">.</span>_encode_request<span class="token punctuation">(</span>request<span class="token punctuation">)</span>
+        score <span class="token operator">=</span> <span class="token operator">-</span>request<span class="token punctuation">.</span>priority
+        <span class="token comment"># We don't use zadd method as the order of arguments change depending on</span>
+        <span class="token comment"># whether the class is Redis or StrictRedis, and the option of using</span>
+        <span class="token comment"># kwargs only accepts strings, not bytes.</span>
+        self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>execute_command<span class="token punctuation">(</span><span class="token string">'ZADD'</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span>key<span class="token punctuation">,</span> score<span class="token punctuation">,</span> data<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">pop</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> timeout<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;
+        Pop a request
+        timeout not support in this queue class
+        &quot;&quot;&quot;</span>
+        <span class="token comment"># use atomic range/remove using multi/exec</span>
+        pipe <span class="token operator">=</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>pipeline<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        pipe<span class="token punctuation">.</span>multi<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        pipe<span class="token punctuation">.</span>zrange<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>zremrangebyrank<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        results<span class="token punctuation">,</span> count <span class="token operator">=</span> pipe<span class="token punctuation">.</span>execute<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> results<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> self<span class="token punctuation">.</span>_decode_request<span class="token punctuation">(</span>results<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+
+</code></pre></div><p>len：封装redis的zcard方法</p> <p>push：封装redis的zadd方法，将request.priority和编码后的request存入数据库，这里的request.priority应该是数字越大优先级越高，然而数据库中，数字小的排在前面，所以取负数存入</p> <p>pop: 创建一个redis pipeline，调用multi标记一个事物块开始，执行zrange(self.key, 0, 0)和zremrangebyrank(self.key, 0, 0)</p> <p>zrange(self.key, 0, 0)用于获取有序集合的第一个值</p> <p>zremrangebyrank(self.key, 0, 0)用于删除有序集合的第一个值</p> <p><a href="https://www.runoob.com/redis/sorted-sets-zadd.html" target="_blank" rel="noopener noreferrer">zadd<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> <a href="https://www.runoob.com/redis/sorted-sets-zremrangebyrank.html" target="_blank" rel="noopener noreferrer">Zremrangebyrank <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> <a href="https://www.runoob.com/redis/sorted-sets-zrange.html" target="_blank" rel="noopener noreferrer">Zrange<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p> <p><a href="https://www.runoob.com/redis/redis-pipelining.html" target="_blank" rel="noopener noreferrer">pipeline技术<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> <a href="https://www.runoob.com/redis/transactions-multi.html" target="_blank" rel="noopener noreferrer">multi<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> <a href="https://juejin.im/post/5b42e025f265da0fa332d4dc" target="_blank" rel="noopener noreferrer">redis中multi与pipeline介绍分析<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p> <p><strong>后进先出队列</strong></p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">class</span> <span class="token class-name">LifoQueue</span><span class="token punctuation">(</span>Base<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Per-spider LIFO queue.&quot;&quot;&quot;</span>
+
+    <span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Return the length of the stack&quot;&quot;&quot;</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>llen<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">push</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Push a request&quot;&quot;&quot;</span>
+        self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>lpush<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">,</span> self<span class="token punctuation">.</span>_encode_request<span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">pop</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> timeout<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Pop a request&quot;&quot;&quot;</span>
+        <span class="token keyword">if</span> timeout <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            data <span class="token operator">=</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>blpop<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">,</span> timeout<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> <span class="token builtin">tuple</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                data <span class="token operator">=</span> data<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            data <span class="token operator">=</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>lpop<span class="token punctuation">(</span>self<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> data<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> self<span class="token punctuation">.</span>_decode_request<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+</code></pre></div><p>和先进先出的区别在于pop时变成了lpop</p> <h2 id="scheduler-py"><a href="#scheduler-py" class="header-anchor">#</a> scheduler.py</h2> <p>ScrapyRedis 配合 Queue、 DupeFilter 使用的调度器 Scheduler</p> <div class="language- extra-class"><pre class="language-text"><code>    def __init__(self, server,
+                 persist=False,
+                 flush_on_start=False,
+                 queue_key=defaults.SCHEDULER_QUEUE_KEY,
+                 queue_cls=defaults.SCHEDULER_QUEUE_CLASS,
+                 dupefilter_key=defaults.SCHEDULER_DUPEFILTER_KEY,
+                 dupefilter_cls=defaults.SCHEDULER_DUPEFILTER_CLASS,
+                 idle_before_close=0,
+                 serializer=None):
+        &quot;&quot;&quot;Initialize scheduler.
+
+        Parameters
+        ----------
+        server : Redis
+            The redis server instance.
+        persist : bool
+            Whether to flush requests when closing. Default is False.
+        flush_on_start : bool
+            Whether to flush requests on start. Default is False.
+        queue_key : str
+            Requests queue key.
+        queue_cls : str
+            Importable path to the queue class.
+        dupefilter_key : str
+            Duplicates filter key.
+        dupefilter_cls : str
+            Importable path to the dupefilter class.
+        idle_before_close : int
+            Timeout before giving up.
+
+        &quot;&quot;&quot;
+        if idle_before_close &lt; 0:
+            raise TypeError(&quot;idle_before_close cannot be negative&quot;)
+
+        self.server = server
+        self.persist = persist
+        self.flush_on_start = flush_on_start
+        self.queue_key = queue_key
+        self.queue_cls = queue_cls
+        self.dupefilter_cls = dupefilter_cls
+        self.dupefilter_key = dupefilter_key
+        self.idle_before_close = idle_before_close
+        self.serializer = serializer
+        self.stats = None
+</code></pre></div><p>初始化接收</p> <p>server： redis连接实例</p> <p>persist：调度器结束时是否清除requests queue，默认False</p> <p>flush_on_start：调度器开始时是否清除requests queue，默认False</p> <p>queue_key：requests queue的key，通过这个key去redis中查找队列</p> <p>queue_cls:：队列的类，默认为优先级队列</p> <p>dupefilter_key：request set去重的key，通过这个key去redis中查找去重set</p> <p>dupefilter_cls：去重类，默认为scrapy_redis.dupefilter.RFPDupeFilter，当然你也可以编写自己的去重类替换</p> <p>idle_before_close：超时时间</p> <p><strong>两个类方法</strong></p> <div class="language-python extra-class"><pre class="language-python"><code>    <span class="token decorator annotation punctuation">@classmethod</span>
+    <span class="token keyword">def</span> <span class="token function">from_settings</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> settings<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        kwargs <span class="token operator">=</span> <span class="token punctuation">{</span>
+            <span class="token string">'persist'</span><span class="token punctuation">:</span> settings<span class="token punctuation">.</span>getbool<span class="token punctuation">(</span><span class="token string">'SCHEDULER_PERSIST'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token string">'flush_on_start'</span><span class="token punctuation">:</span> settings<span class="token punctuation">.</span>getbool<span class="token punctuation">(</span><span class="token string">'SCHEDULER_FLUSH_ON_START'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token string">'idle_before_close'</span><span class="token punctuation">:</span> settings<span class="token punctuation">.</span>getint<span class="token punctuation">(</span><span class="token string">'SCHEDULER_IDLE_BEFORE_CLOSE'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment"># If these values are missing, it means we want to use the defaults.</span>
+        optional <span class="token operator">=</span> <span class="token punctuation">{</span>
+            <span class="token comment"># TODO: Use custom prefixes for this settings to note that are</span>
+            <span class="token comment"># specific to scrapy-redis.</span>
+            <span class="token string">'queue_key'</span><span class="token punctuation">:</span> <span class="token string">'SCHEDULER_QUEUE_KEY'</span><span class="token punctuation">,</span>
+            <span class="token string">'queue_cls'</span><span class="token punctuation">:</span> <span class="token string">'SCHEDULER_QUEUE_CLASS'</span><span class="token punctuation">,</span>
+            <span class="token string">'dupefilter_key'</span><span class="token punctuation">:</span> <span class="token string">'SCHEDULER_DUPEFILTER_KEY'</span><span class="token punctuation">,</span>
+            <span class="token comment"># We use the default setting name to keep compatibility.</span>
+            <span class="token string">'dupefilter_cls'</span><span class="token punctuation">:</span> <span class="token string">'DUPEFILTER_CLASS'</span><span class="token punctuation">,</span>
+            <span class="token string">'serializer'</span><span class="token punctuation">:</span> <span class="token string">'SCHEDULER_SERIALIZER'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">for</span> name<span class="token punctuation">,</span> setting_name <span class="token keyword">in</span> optional<span class="token punctuation">.</span>items<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            val <span class="token operator">=</span> settings<span class="token punctuation">.</span>get<span class="token punctuation">(</span>setting_name<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> val<span class="token punctuation">:</span>
+                kwargs<span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> val
+
+        <span class="token comment"># Support serializer as a path to a module.</span>
+        <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>kwargs<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'serializer'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> six<span class="token punctuation">.</span>string_types<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            kwargs<span class="token punctuation">[</span><span class="token string">'serializer'</span><span class="token punctuation">]</span> <span class="token operator">=</span> importlib<span class="token punctuation">.</span>import_module<span class="token punctuation">(</span>kwargs<span class="token punctuation">[</span><span class="token string">'serializer'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+        server <span class="token operator">=</span> connection<span class="token punctuation">.</span>from_settings<span class="token punctuation">(</span>settings<span class="token punctuation">)</span>
+        <span class="token comment"># Ensure the connection is working.</span>
+        server<span class="token punctuation">.</span>ping<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">return</span> cls<span class="token punctuation">(</span>server<span class="token operator">=</span>server<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span>
+
+    @<span class="token builtin">classmethod</span>
+    <span class="token keyword">def</span> <span class="token function">from_crawler</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> crawler<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        instance <span class="token operator">=</span> cls<span class="token punctuation">.</span>from_settings<span class="token punctuation">(</span>crawler<span class="token punctuation">.</span>settings<span class="token punctuation">)</span>
+        <span class="token comment"># FIXME: for now, stats are only supported from this constructor</span>
+        instance<span class="token punctuation">.</span>stats <span class="token operator">=</span> crawler<span class="token punctuation">.</span>stats
+        <span class="token keyword">return</span> instance
+</code></pre></div><p>用于根据setting设置创建scheduler实例。</p> <p><strong>open方法</strong></p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">open</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> spider<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>spider <span class="token operator">=</span> spider
+
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>queue <span class="token operator">=</span> load_object<span class="token punctuation">(</span>self<span class="token punctuation">.</span>queue_cls<span class="token punctuation">)</span><span class="token punctuation">(</span>
+                server<span class="token operator">=</span>self<span class="token punctuation">.</span>server<span class="token punctuation">,</span>
+                spider<span class="token operator">=</span>spider<span class="token punctuation">,</span>
+                key<span class="token operator">=</span>self<span class="token punctuation">.</span>queue_key <span class="token operator">%</span> <span class="token punctuation">{</span><span class="token string">'spider'</span><span class="token punctuation">:</span> spider<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token punctuation">,</span>
+                serializer<span class="token operator">=</span>self<span class="token punctuation">.</span>serializer<span class="token punctuation">,</span>
+            <span class="token punctuation">)</span>
+        <span class="token keyword">except</span> TypeError <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">&quot;Failed to instantiate queue class '%s': %s&quot;</span><span class="token punctuation">,</span>
+                             self<span class="token punctuation">.</span>queue_cls<span class="token punctuation">,</span> e<span class="token punctuation">)</span>
+
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>df <span class="token operator">=</span> load_object<span class="token punctuation">(</span>self<span class="token punctuation">.</span>dupefilter_cls<span class="token punctuation">)</span><span class="token punctuation">(</span>
+                server<span class="token operator">=</span>self<span class="token punctuation">.</span>server<span class="token punctuation">,</span>
+                key<span class="token operator">=</span>self<span class="token punctuation">.</span>dupefilter_key <span class="token operator">%</span> <span class="token punctuation">{</span><span class="token string">'spider'</span><span class="token punctuation">:</span> spider<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token punctuation">,</span>
+                debug<span class="token operator">=</span>spider<span class="token punctuation">.</span>settings<span class="token punctuation">.</span>getbool<span class="token punctuation">(</span><span class="token string">'DUPEFILTER_DEBUG'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token punctuation">)</span>
+        <span class="token keyword">except</span> TypeError <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">&quot;Failed to instantiate dupefilter class '%s': %s&quot;</span><span class="token punctuation">,</span>
+                             self<span class="token punctuation">.</span>dupefilter_cls<span class="token punctuation">,</span> e<span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>flush_on_start<span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>flush<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token comment"># notice if there are requests already in the queue to resume the crawl</span>
+        <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>queue<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            spider<span class="token punctuation">.</span>log<span class="token punctuation">(</span><span class="token string">&quot;Resuming crawl (%d requests scheduled)&quot;</span> <span class="token operator">%</span> <span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>queue<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre></div><p>self.queue实例化爬取队列类，self.df实例化去重类，判断self.flush_on_start</p> <p>是否调用self.flush()</p> <div class="language-python extra-class"><pre class="language-python"><code>    <span class="token keyword">def</span> <span class="token function">close</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> reason<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> <span class="token keyword">not</span> self<span class="token punctuation">.</span>persist<span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>flush<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">flush</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>df<span class="token punctuation">.</span>clear<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>queue<span class="token punctuation">.</span>clear<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre></div><p>close:判断 self.presist，关闭时是否调用self.flush</p> <p>flush:调用实例的clear方法清除数据</p> <p><strong>存取方法</strong></p> <div class="language-python extra-class"><pre class="language-python"><code>    <span class="token keyword">def</span> <span class="token function">enqueue_request</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> <span class="token keyword">not</span> request<span class="token punctuation">.</span>dont_filter <span class="token keyword">and</span> self<span class="token punctuation">.</span>df<span class="token punctuation">.</span>request_seen<span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>df<span class="token punctuation">.</span>log<span class="token punctuation">(</span>request<span class="token punctuation">,</span> self<span class="token punctuation">.</span>spider<span class="token punctuation">)</span>
+            <span class="token keyword">return</span> <span class="token boolean">False</span>
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>stats<span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>stats<span class="token punctuation">.</span>inc_value<span class="token punctuation">(</span><span class="token string">'scheduler/enqueued/redis'</span><span class="token punctuation">,</span> spider<span class="token operator">=</span>self<span class="token punctuation">.</span>spider<span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>queue<span class="token punctuation">.</span>push<span class="token punctuation">(</span>request<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token boolean">True</span>
+    <span class="token keyword">def</span> <span class="token function">next_request</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        block_pop_timeout <span class="token operator">=</span> self<span class="token punctuation">.</span>idle_before_close
+        request <span class="token operator">=</span> self<span class="token punctuation">.</span>queue<span class="token punctuation">.</span>pop<span class="token punctuation">(</span>block_pop_timeout<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> request <span class="token keyword">and</span> self<span class="token punctuation">.</span>stats<span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>stats<span class="token punctuation">.</span>inc_value<span class="token punctuation">(</span><span class="token string">'scheduler/dequeued/redis'</span><span class="token punctuation">,</span> spider<span class="token operator">=</span>self<span class="token punctuation">.</span>spider<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> request
+
+    <span class="token keyword">def</span> <span class="token function">has_pending_requests</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span>
+
+</code></pre></div><p><strong>enqueue_request(self, request):</strong></p> <p>判断request是否不需要去重 和 去重队列是否已存在这个request，若任一条件不满足则打印日志，返回false</p> <p>若都满足条件则调用队列实例的pop方法将request加入爬取队列</p> <p>if self.stats 用于判断是否需要统计</p> <p><strong>next_request(self)</strong>：</p> <p>设置超时函数</p> <p>调用队列实例的pop方法抛出request，</p> <p>判断是否获得request和是否需要统计，都满足则统计</p> <p>返回request</p> <h2 id="spiders-py"><a href="#spiders-py" class="header-anchor">#</a> spiders.py</h2> <p>构建了一个RedisMixin类用于从redis队列读取urls</p> <div class="language-python extra-class"><pre class="language-python"><code>    redis_key <span class="token operator">=</span> <span class="token boolean">None</span>
+    redis_batch_size <span class="token operator">=</span> <span class="token boolean">None</span>
+    redis_encoding <span class="token operator">=</span> <span class="token boolean">None</span>
+
+    <span class="token comment"># Redis client placeholder.</span>
+    server <span class="token operator">=</span> <span class="token boolean">None</span>
+
+    <span class="token keyword">def</span> <span class="token function">start_requests</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns a batch of start requests from redis.&quot;&quot;&quot;</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>next_requests<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre></div><p>定义了redis_key,redis_batch_size,redis_encoding,server为None，start_requests调用next_requests方法</p> <div class="language-python extra-class"><pre class="language-python"><code>    <span class="token keyword">def</span> <span class="token function">setup_redis</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> crawler<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Setup redis connection and idle signal.
+
+        This should be called after the spider has set its crawler object.
+        &quot;&quot;&quot;</span>
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>server <span class="token keyword">is</span> <span class="token keyword">not</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span>
+
+        <span class="token keyword">if</span> crawler <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            <span class="token comment"># We allow optional crawler argument to keep backwards</span>
+            <span class="token comment"># compatibility.</span>
+            <span class="token comment"># XXX: Raise a deprecation warning.</span>
+            crawler <span class="token operator">=</span> <span class="token builtin">getattr</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> <span class="token string">'crawler'</span><span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> crawler <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">&quot;crawler is required&quot;</span><span class="token punctuation">)</span>
+
+        settings <span class="token operator">=</span> crawler<span class="token punctuation">.</span>settings
+
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>redis_key <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>redis_key <span class="token operator">=</span> settings<span class="token punctuation">.</span>get<span class="token punctuation">(</span>
+                <span class="token string">'REDIS_START_URLS_KEY'</span><span class="token punctuation">,</span> defaults<span class="token punctuation">.</span>START_URLS_KEY<span class="token punctuation">,</span>
+            <span class="token punctuation">)</span>
+
+        self<span class="token punctuation">.</span>redis_key <span class="token operator">=</span> self<span class="token punctuation">.</span>redis_key <span class="token operator">%</span> <span class="token punctuation">{</span><span class="token string">'name'</span><span class="token punctuation">:</span> self<span class="token punctuation">.</span>name<span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token keyword">not</span> self<span class="token punctuation">.</span>redis_key<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">&quot;redis_key must not be empty&quot;</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>redis_batch_size <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            <span class="token comment"># TODO: Deprecate this setting (REDIS_START_URLS_BATCH_SIZE).</span>
+            self<span class="token punctuation">.</span>redis_batch_size <span class="token operator">=</span> settings<span class="token punctuation">.</span>getint<span class="token punctuation">(</span>
+                <span class="token string">'REDIS_START_URLS_BATCH_SIZE'</span><span class="token punctuation">,</span>
+                settings<span class="token punctuation">.</span>getint<span class="token punctuation">(</span><span class="token string">'CONCURRENT_REQUESTS'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token punctuation">)</span>
+
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>redis_batch_size <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>redis_batch_size<span class="token punctuation">)</span>
+        <span class="token keyword">except</span> <span class="token punctuation">(</span>TypeError<span class="token punctuation">,</span> ValueError<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">&quot;redis_batch_size must be an integer&quot;</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>redis_encoding <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>redis_encoding <span class="token operator">=</span> settings<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'REDIS_ENCODING'</span><span class="token punctuation">,</span> defaults<span class="token punctuation">.</span>REDIS_ENCODING<span class="token punctuation">)</span>
+
+        self<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>info<span class="token punctuation">(</span><span class="token string">&quot;Reading start URLs from redis key '%(redis_key)s' &quot;</span>
+                         <span class="token string">&quot;(batch size: %(redis_batch_size)s, encoding: %(redis_encoding)s&quot;</span><span class="token punctuation">,</span>
+                         self<span class="token punctuation">.</span>__dict__<span class="token punctuation">)</span>
+
+        self<span class="token punctuation">.</span>server <span class="token operator">=</span> connection<span class="token punctuation">.</span>from_settings<span class="token punctuation">(</span>crawler<span class="token punctuation">.</span>settings<span class="token punctuation">)</span>
+        <span class="token comment"># The idle signal is called when the spider has no requests left,</span>
+        <span class="token comment"># that's when we will schedule new requests from redis queue</span>
+        crawler<span class="token punctuation">.</span>signals<span class="token punctuation">.</span>connect<span class="token punctuation">(</span>self<span class="token punctuation">.</span>spider_idle<span class="token punctuation">,</span> signal<span class="token operator">=</span>signals<span class="token punctuation">.</span>spider_idle<span class="token punctuation">)</span>
+
+</code></pre></div><p>setup_redis(self, crawler=None)接收一个爬虫对象，设置redis连接和空闲信号。当spider没有剩余requests时，调用空闲信号，从redis队列中调度新requests</p> <div class="language-python extra-class"><pre class="language-python"><code>    <span class="token keyword">def</span> <span class="token function">next_requests</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns a request to be scheduled or none.&quot;&quot;&quot;</span>
+        use_set <span class="token operator">=</span> self<span class="token punctuation">.</span>settings<span class="token punctuation">.</span>getbool<span class="token punctuation">(</span><span class="token string">'REDIS_START_URLS_AS_SET'</span><span class="token punctuation">,</span> defaults<span class="token punctuation">.</span>START_URLS_AS_SET<span class="token punctuation">)</span>
+        fetch_one <span class="token operator">=</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>spop <span class="token keyword">if</span> use_set <span class="token keyword">else</span> self<span class="token punctuation">.</span>server<span class="token punctuation">.</span>lpop
+        <span class="token comment"># XXX: Do we need to use a timeout here?</span>
+        found <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token comment"># TODO: Use redis pipeline execution.</span>
+        <span class="token keyword">while</span> found <span class="token operator">&lt;</span> self<span class="token punctuation">.</span>redis_batch_size<span class="token punctuation">:</span>
+            data <span class="token operator">=</span> fetch_one<span class="token punctuation">(</span>self<span class="token punctuation">.</span>redis_key<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token keyword">not</span> data<span class="token punctuation">:</span>
+                <span class="token comment"># Queue empty.</span>
+                <span class="token keyword">break</span>
+            req <span class="token operator">=</span> self<span class="token punctuation">.</span>make_request_from_data<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> req<span class="token punctuation">:</span>
+                <span class="token keyword">yield</span> req
+                found <span class="token operator">+=</span> <span class="token number">1</span>
+            <span class="token keyword">else</span><span class="token punctuation">:</span>
+                self<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>debug<span class="token punctuation">(</span><span class="token string">&quot;Request not made from data: %r&quot;</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> found<span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>debug<span class="token punctuation">(</span><span class="token string">&quot;Read %s requests from '%s'&quot;</span><span class="token punctuation">,</span> found<span class="token punctuation">,</span> self<span class="token punctuation">.</span>redis_key<span class="token punctuation">)</span>
+</code></pre></div><p>next_requests(self):从REDIS_START_URLS获取data，调用make_request_from_data处理data，返回requests</p> <div class="language-python extra-class"><pre class="language-python"><code>    <span class="token keyword">def</span> <span class="token function">make_request_from_data</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns a Request instance from data coming from Redis.
+
+        By default, ``data`` is an encoded URL. You can override this method to
+        provide your own message decoding.
+
+        Parameters
+        ----------
+        data : bytes
+            Message from redis.
+
+        &quot;&quot;&quot;</span>
+        url <span class="token operator">=</span> bytes_to_str<span class="token punctuation">(</span>data<span class="token punctuation">,</span> self<span class="token punctuation">.</span>redis_encoding<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>make_requests_from_url<span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">schedule_next_requests</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Schedules a request if available&quot;&quot;&quot;</span>
+        <span class="token comment"># TODO: While there is capacity, schedule a batch of redis requests.</span>
+        <span class="token keyword">for</span> req <span class="token keyword">in</span> self<span class="token punctuation">.</span>next_requests<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>crawler<span class="token punctuation">.</span>engine<span class="token punctuation">.</span>crawl<span class="token punctuation">(</span>req<span class="token punctuation">,</span> spider<span class="token operator">=</span>self<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">spider_idle</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;Schedules a request if available, otherwise waits.&quot;&quot;&quot;</span>
+        <span class="token comment"># XXX: Handle a sentinel to close the spider.</span>
+        self<span class="token punctuation">.</span>schedule_next_requests<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">raise</span> DontCloseSpider
+
+</code></pre></div><p>make_request_from_data(self, data)：调用make_requests_from_url(url)返回requests对象</p> <p>schedule_next_requests(self)：调度requests对象给爬虫抓取</p> <p>spider_idle(self)：空闲处理。非空调用schedule_next_requests(self)，为空则等待。</p> <h2 id="utils-py"><a href="#utils-py" class="header-anchor">#</a> utils.py</h2> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">import</span> six
+
+
+<span class="token keyword">def</span> <span class="token function">bytes_to_str</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;Returns a str if a bytes object is given.&quot;&quot;&quot;</span>
+    <span class="token keyword">if</span> six<span class="token punctuation">.</span>PY3 <span class="token keyword">and</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> <span class="token builtin">bytes</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> s<span class="token punctuation">.</span>decode<span class="token punctuation">(</span>encoding<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> s
+
+</code></pre></div><p>字节转utf-8编码字符</p> <h1 id="finally"><a href="#finally" class="header-anchor">#</a> finally</h1> <p>以上就是scrapy-redis的所有源码了，总的来说scrapy-redis实现分布式爬虫的原理，就是共用了一个主节点的redis数据库存储的requestsqueue，dupefilter set，item。</p> <p>那么问题来了，为什么是redis而不是mongodb，SQL呢？</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/python/scrapy-redis 构建分布式爬取京东书籍信息.html" class="prev">scrapy-redis 构建分布式爬取京东书籍信息</a></span> <span class="next"><a href="/python/scrapyd服务器跑爬虫+爬虫可视化.html">scrapyd服务器跑爬虫+爬虫可视化</a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.dabac77d.js" defer></script><script src="/assets/js/2.b1acc2ad.js" defer></script><script src="/assets/js/21.8d029260.js" defer></script>
+  </body>
+</html>
